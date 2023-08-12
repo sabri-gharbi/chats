@@ -1,11 +1,6 @@
-export type Cat = {
-  id: string;
-  name: string;
-  birthDate: Date;
-  breed: string;
-  gender: "Male" | "Female";
-  city: string;
-  description: string;
-  photo: string;
-  adoptionStatus: "Available" | "Adopted";
-};
+import { type RouterInputs, type RouterOutputs } from "~/utils/api";
+
+export type UpdateCatInput = RouterInputs["cats"]["edit"];
+export type CreateCatInput = RouterInputs["cats"]["create"];
+
+export type Cat = RouterOutputs["cats"]["all"][number];

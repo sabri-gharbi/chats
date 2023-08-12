@@ -1,39 +1,18 @@
-import { useState } from "react";
-import CatCard from "./CatCard";
-import { api } from "~/utils/api";
-import { Box, Button } from "@mui/material";
-import CatModal from "./CatModal";
+import { Box } from "@mui/material";
 import { type Cat } from "~/Types";
+import CatCard from "./CatCard";
 
-const CatsList = () => {
-    const { mutate: createCat } = api.cats.create.useMutation();
-
-    const [selectedCat, setSelectedCat] = useState<Cat>();
-
-    const [catModalShown, setCatModalShown] = useState<boolean>(false);
-
-    const handleCloseCatModal = () => {
-        setCatModalShown(false);
-        setSelectedCat(undefined);
-    };
-
-    const handleCatCardClick = (cat: Cat) => {
-        setSelectedCat(cat);
-        setCatModalShown(true);
-    };
-
+type CardListProps = {
+    cats: Cat[];
+    onClick: (cat: Cat) => void;
+};
+const CatsList = ({ cats, onClick }: CardListProps) => {
     return (
-        <>
-            {selectedCat && <CatModal cat={selectedCat} open={catModalShown} onClose={handleCloseCatModal} />}
-
-            <Button onClick={() => createCat()}>Ceate a cat</Button>
-
-            {/* <Box display="flex" flexDirection="column" gap={2}>
-              {(cats ?? []).map((cat) => (
-                  <CatCard key={cat.id} cat={cat} onClick={handleCatCardClick} />
-              ))}
-          </Box> */}
-        </>
+        <Box display="flex" flexDirection="column" gap={2}>
+            {cats.map((cat) => (
+                <CatCard key={cat.id} cat={cat} onClick={onClick} />
+            ))}
+        </Box>
     );
 };
 
