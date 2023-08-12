@@ -1,0 +1,45 @@
+{
+    "editor.formatOnPaste": true,
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4,
+    "editor.wordWrapColumn": 120,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "prettier.printWidth": 122,
+    "prettier.tabWidth": 4,
+    "prettier.proseWrap": "always",
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "yaml.schemas": {
+        "./.vscode/swaggerSchemas/paths.json": "/swagger/paths/*.yaml"
+    },
+    "maptz.regionfolder": {
+        "[prisma]": {
+            "foldEnd": "// #endregion", //Text inserted at the end of the fold
+            "foldEndRegex": "//[\\s]*#endregion(.*)", //Regex used to find fold end text.
+            "foldStart": "// #region [NAME]", //Text inserted at the start of the fold.
+            //Use the `[NAME]` placeholder to indicate
+            //where the cursor should be placed after
+            //insertion
+            "foldStartRegex": "//[\\s]*#region*(.*)", ////Regex used to find fold start text.
+            "disableFolding": false //Turn off #region folding for this language
+        }
+    },
+    "[prisma]": {
+        "editor.defaultFormatter": "Prisma.prisma"
+    },
+    "jest.jestCommandLine": "npx jest --testPathIgnorePatterns=\".*/integration/*\"",
+    "[xml]": {
+        "editor.defaultFormatter": "DotJoshJohnson.xml"
+    },
+    "[yaml]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "[github-actions-workflow]": {
+        "editor.defaultFormatter": "redhat.vscode-yaml"
+    },
+    "[bicep]": {
+        "editor.defaultFormatter": "ms-azuretools.vscode-bicep"
+    }
+    // "[typescriptreact]": {
+    //     "editor.defaultFormatter": ""
+    // }
+}
