@@ -1,9 +1,7 @@
-import { Box, Typography, Button } from "@mui/material";
-import { api } from "~/utils/api";
+import { Box } from "@mui/material";
+import CatsList from "~/components/CatsList";
 
 export default function Home() {
-  const { data: hello } = api.example.hello.useQuery({ text: "from Cats" });
-
   return (
     <Box
       display="flex"
@@ -12,10 +10,7 @@ export default function Home() {
       alignItems="center"
       height="100vh"
     >
-      {hello && <Typography>{hello}</Typography>}
-      <Box>
-        <Button variant="contained">Let Dive in !</Button>
-      </Box>
+      <CatsList></CatsList>
     </Box>
   );
 }
