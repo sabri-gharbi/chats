@@ -1,31 +1,52 @@
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import CatsList from "~/components/CatsList";
 import { api } from "~/utils/api";
 import { useState } from "react";
-import CatModal from "~/components/CatModal";
+import CatModal, { type CatModalProps } from "~/components/CatModal";
 import { type Cat } from "~/Types";
 
 export default function Home() {
     const { data: cats, isLoading: isCatsLoading } = api.cats.all.useQuery();
 
     const [selectedCat, setSelectedCat] = useState<Cat>();
-
     const [catModalShown, setCatModalShown] = useState<boolean>(false);
+    const [catModalvariant, setCatModalVariant] = useState<CatModalProps["variant"]>();
 
     const handleCloseCatModal = () => {
         setCatModalShown(false);
         setSelectedCat(undefined);
     };
+
     const handleCatCardClick = (cat: Cat) => {
         setSelectedCat(cat);
+        setCatModalVariant(undefined);
+        setCatModalShown(true);
+    };
+
+    const handleEditCatClick = (cat: Cat) => {
+        setSelectedCat(cat);
+        setCatModalVariant(undefined);
+        setCatModalShown(true);
+    };
+
+    const handleOpenCreateCatModal = () => {
+        setSelectedCat(undefined);
+        setCatModalVariant("create");
         setCatModalShown(true);
     };
 
     return (
         <>
-            {selectedCat && <CatModal cat={selectedCat} open={catModalShown} onClose={handleCloseCatModal} />}
+            <CatModal cat={selectedCat} open={catModalShown} onClose={handleCloseCatModal} variant={catModalvariant} />
+
+            <Button onClick={handleOpenCreateCatModal}>Add a Cat</Button>
+
             <Box display="flex" flexDirection="column" justifyContent="center">
-                <CatsList cats={cats ?? []} onClick={handleCatCardClick} />
+                <CatsList
+                    cats={cats ?? []}
+                    handleCatCardClick={handleCatCardClick}
+                    handleEditCatClick={handleEditCatClick}
+                />
             </Box>
         </>
     );

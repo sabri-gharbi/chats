@@ -4,13 +4,19 @@ import CatCard from "./CatCard";
 
 type CardListProps = {
     cats: Cat[];
-    onClick: (cat: Cat) => void;
+    handleCatCardClick: (cat: Cat) => void;
+    handleEditCatClick: (cat: Cat) => void;
 };
-const CatsList = ({ cats, onClick }: CardListProps) => {
+const CatsList = ({ cats, handleCatCardClick, handleEditCatClick }: CardListProps) => {
     return (
         <Box display="flex" flexDirection="column" gap={2}>
             {cats.map((cat) => (
-                <CatCard key={cat.id} cat={cat} onClick={onClick} />
+                <CatCard
+                    key={cat.id}
+                    cat={cat}
+                    handleCatCardClick={handleCatCardClick}
+                    handleEditCatClick={handleEditCatClick}
+                />
             ))}
         </Box>
     );
