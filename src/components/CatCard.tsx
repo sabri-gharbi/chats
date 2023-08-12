@@ -1,29 +1,33 @@
 import {
-  CardMedia,
   Card,
-  Typography,
   CardActionArea,
   CardContent,
+  CardMedia,
+  Typography,
 } from "@mui/material";
-import React from "react";
+import { type Cat } from "~/Types";
 
-export default function CatCard() {
+type catCardProps = {
+  cat: Cat;
+  onClick: (cat: Cat) => void;
+};
+
+export default function CatCard({ cat, onClick }: catCardProps) {
   return (
-    <Card sx={{ maxWidth: 345 }}>
-      <CardActionArea>
+    <Card>
+      <CardActionArea sx={{ display: "flex" }} onClick={() => onClick(cat)}>
         <CardMedia
           component="img"
           height="140"
-          image="https://api-ninjas.com/images/cats/abyssinian.jpg"
-          alt="green iguana"
+          image={cat.photo}
+          alt={cat.name}
         />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
-            Lizard
+            {cat.name}
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Lizards are a widespread group of squamate reptiles, with over 6,000
-            species, ranging across all continents except Antarctica
+            {cat.description}
           </Typography>
         </CardContent>
       </CardActionArea>

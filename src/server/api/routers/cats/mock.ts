@@ -9,7 +9,7 @@ export const cats: Cat[] = [
     gender: "Male",
     city: "Paris",
     description: "Minou is a playful and affectionate cat.",
-    photo: "link_to_minou_photo.jpg",
+    photo: "https://api-ninjas.com/images/cats/abyssinian.jpg",
     adoptionStatus: "Available",
   },
   {
@@ -20,7 +20,7 @@ export const cats: Cat[] = [
     gender: "Male",
     city: "Lyon",
     description: "Felix is a gentle giant with a heart of gold.",
-    photo: "link_to_felix_photo.jpg",
+    photo: "https://api-ninjas.com/images/cats/abyssinian.jpg",
     adoptionStatus: "Available",
   },
   // Add more Cat objects here
