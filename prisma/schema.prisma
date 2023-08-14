@@ -11,15 +11,43 @@ datasource db {
 }
 
 model Cat {
-    id             String   @id @default(auto()) @map("_id") @db.ObjectId
-    name           String
-    birthDate      DateTime
-    breed          String
-    gender         String
-    city           String
-    description    String
-    photo          String
-    adoptionStatus String
-    createdAt      DateTime @default(now())
-    updatedAt      DateTime @updatedAt
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    name        String
+    birthDate   DateTime
+    breed       String
+    gender      String
+    city        String
+    description String
+    photo       String
+
+    adoptiuonStatusId String         @db.ObjectId
+    adoptionStatus    AdoptionStatus @relation(fields: [adoptiuonStatusId], references: [id])
+
+    catLoversIds String[] @db.ObjectId
+    catLovers    User[]   @relation(fields: [catLoversIds], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model AdoptionStatus {
+    id          String  @id @map("_id") @db.ObjectId
+    isAdopted   Boolean
+    isPending   Boolean
+    isAdoptable Boolean
+
+    cats Cat[]
+}
+
+model User {
+    id    String @id @default(auto()) @map("_id") @db.ObjectId
+    name  String
+    email String @unique()
+    role  String
+
+    favouriteCatsIds String[] @db.ObjectId
+    favouriteCats    Cat[]    @relation(fields: [favouriteCatsIds], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }

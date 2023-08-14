@@ -56,9 +56,9 @@ const CatModal = ({ onClose, open, cat, variant }: CatModalProps) => {
                         </Grid>
                         <Grid item xs={4}>
                             {variant ? (
-                                <TextField label="Adoption status" {...register("adoptionStatus")} />
+                                <TextField label="Adoption status" {...register("adoptiuonStatusId")} />
                             ) : (
-                                <Typography>{cat?.adoptionStatus}</Typography>
+                                <Typography>{cat?.adoptiuonStatusId}</Typography>
                             )}
                         </Grid>
                         <Grid item xs={4}>

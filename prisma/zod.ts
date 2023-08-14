@@ -1,5 +1,21 @@
 import { z } from "zod";
 
+export const AdoptionStatusModel = z.object({
+    id: z.string(),
+    isAdopted: z.boolean(),
+    isPending: z.boolean(),
+    isAdoptable: z.boolean(),
+});
+
+export const UserModel = z.object({
+    id: z.string(),
+    name: z.string(),
+    email: z.string(),
+    role: z.string(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+});
+
 export const CatModel = z.object({
     id: z.string(),
     name: z.string(),
@@ -9,7 +25,6 @@ export const CatModel = z.object({
     city: z.string(),
     description: z.string(),
     photo: z.string(),
-    adoptionStatus: z.string(),
     createdAt: z.date(),
     updatedAt: z.date(),
 });

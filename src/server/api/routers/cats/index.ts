@@ -1,6 +1,7 @@
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
 import { CreateCatInput, GetCatInput, UpdateCatInput } from "./zod";
+import { seededCatStatusIds } from "~/constants";
 
 export const catsRouter = createTRPCRouter({
     all: publicProcedure.query(async () => await prisma.cat.findMany()),
@@ -17,6 +18,11 @@ export const catsRouter = createTRPCRouter({
             await prisma.cat.create({
                 data: {
                     ...input,
+                    adoptionStatus: {
+                        connect: {
+                            id: seededCatStatusIds.isAdoptable.id,
+                        },
+                    },
                 },
             })
     ),
