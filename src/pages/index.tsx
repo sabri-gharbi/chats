@@ -1,13 +1,15 @@
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { User } from "~/Types";
+import { useContext, useState } from "react";
+import { type User } from "~/Types";
+import { CatsAppContext } from "~/components/Layout";
 import UserCard from "~/components/users/UserCard";
 import UserModal from "~/components/users/UserModal";
 import { api } from "~/utils/api";
 
 const Home = () => {
     const router = useRouter();
+    const { setUser } = useContext(CatsAppContext);
     const { data: users } = api.users.all.useQuery();
 
     const [userModalShown, setUserModalShown] = useState<boolean>(false);
@@ -19,6 +21,7 @@ const Home = () => {
     };
 
     const handleUserCardClick = (user: User) => {
+        setUser?.(user);
         void router.push("/cats");
     };
 

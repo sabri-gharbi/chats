@@ -1,19 +1,30 @@
 import { Menu } from "@mui/icons-material";
-import { AppBar, IconButton, Link, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
+import Link from "next/link";
 import React from "react";
+import { type User } from "~/Types";
 
-const CatsAppBar = () => {
+type CatsAppBarProps = {
+    user?: User;
+};
+const CatsAppBar = ({ user }: CatsAppBarProps) => {
     return (
         <AppBar position="static">
             <Toolbar variant="dense">
-                <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
-                    <Menu />
-                </IconButton>
-                <Link href="/">
-                    <Typography variant="h6" color="white">
-                        Cats
-                    </Typography>
-                </Link>
+                <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" width={"100%"}>
+                    <Link
+                        href="/"
+                        style={{
+                            textDecoration: "none",
+                        }}
+                    >
+                        <Typography variant="h6" color="white">
+                            Cats
+                        </Typography>
+                    </Link>
+
+                    <Typography>{user ? user.email : "Guest"}</Typography>
+                </Box>
             </Toolbar>
         </AppBar>
     );

@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { type AppType } from "next/app";
 import Head from "next/head";
-import CatsAppBar from "~/components/Layout/CatsAppBar";
+import Layout from "~/components/Layout";
 import "~/styles/global.css";
 import { ChatsTheme } from "~/styles/theme";
 import { api } from "~/utils/api";
@@ -21,8 +21,9 @@ const MyApp: AppType = ({ Component, pageProps }) => {
             </Head>
             <ThemeProvider theme={theme}>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <CatsAppBar />
-                    <Component {...pageProps} />
+                    <Layout>
+                        <Component {...pageProps} />
+                    </Layout>
                 </LocalizationProvider>
             </ThemeProvider>
         </>
