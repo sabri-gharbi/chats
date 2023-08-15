@@ -1,53 +1,49 @@
-import { Box, Button } from "@mui/material";
-import CatsList from "~/components/CatsList";
+import { Box, Button, Typography } from "@mui/material";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { User } from "~/Types";
+import UserCard from "~/components/users/UserCard";
+import UserModal from "~/components/users/UserModal";
 import { api } from "~/utils/api";
-import { useState } from "react";
-import CatModal, { type CatModalProps } from "~/components/CatModal";
-import { type Cat } from "~/Types";
 
-export default function Home() {
-    const { data: cats, isLoading: isCatsLoading } = api.cats.all.useQuery();
+const Home = () => {
+    const router = useRouter();
+    const { data: users } = api.users.all.useQuery();
 
-    const [selectedCat, setSelectedCat] = useState<Cat>();
-    const [catModalShown, setCatModalShown] = useState<boolean>(false);
-    const [catModalvariant, setCatModalVariant] = useState<CatModalProps["variant"]>();
-
-    const handleCloseCatModal = () => {
-        setCatModalShown(false);
-        setSelectedCat(undefined);
+    const [userModalShown, setUserModalShown] = useState<boolean>(false);
+    const openUserModal = () => {
+        setUserModalShown(true);
+    };
+    const closeUserModal = () => {
+        setUserModalShown(false);
     };
 
-    const handleCatCardClick = (cat: Cat) => {
-        setSelectedCat(cat);
-        setCatModalVariant(undefined);
-        setCatModalShown(true);
-    };
-
-    const handleEditCatClick = (cat: Cat) => {
-        setSelectedCat(cat);
-        setCatModalVariant(undefined);
-        setCatModalShown(true);
-    };
-
-    const handleOpenCreateCatModal = () => {
-        setSelectedCat(undefined);
-        setCatModalVariant("create");
-        setCatModalShown(true);
+    const handleUserCardClick = (user: User) => {
+        void router.push("/cats");
     };
 
     return (
-        <>
-            <CatModal cat={selectedCat} open={catModalShown} onClose={handleCloseCatModal} variant={catModalvariant} />
+        <Box display="flex" flexDirection="column" padding={4}>
+            <UserModal open={userModalShown} onClose={closeUserModal} />
 
-            <Button onClick={handleOpenCreateCatModal}>Add a Cat</Button>
-
-            <Box display="flex" flexDirection="column" justifyContent="center">
-                <CatsList
-                    cats={cats ?? []}
-                    handleCatCardClick={handleCatCardClick}
-                    handleEditCatClick={handleEditCatClick}
-                />
+            <Box
+                sx={{
+                    border: 1,
+                    borderRadius: 8,
+                    overflow: "hidden",
+                    marginBottom: 2,
+                }}
+            >
+                {users?.map((user) => (
+                    <UserCard key={user.id} user={user} handleUserCardClick={handleUserCardClick} />
+                ))}
             </Box>
-        </>
+
+            <Button variant="contained" onClick={openUserModal}>
+                Add User
+            </Button>
+        </Box>
     );
-}
+};
+
+export default Home;
