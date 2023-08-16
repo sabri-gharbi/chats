@@ -1,4 +1,13 @@
-import { type ThemeOptions } from "@mui/material";
+import { type PaletteColor, type PaletteColorOptions, type ThemeOptions } from "@mui/material";
+
+declare module "@mui/material/styles" {
+    interface PaletteOptions {
+        yellow: PaletteColorOptions;
+    }
+    interface Palette {
+        yellow: PaletteColor;
+    }
+}
 
 export const ChatsTheme: ThemeOptions = {
     palette: {
@@ -10,6 +19,9 @@ export const ChatsTheme: ThemeOptions = {
         },
         background: {
             paper: "#EEEDED",
+        },
+        yellow: {
+            main: "#F8DE22",
         },
     },
     components: {

@@ -1,6 +1,8 @@
 import { Clear, Edit, Star } from "@mui/icons-material";
 import { Box, Card, CardActionArea, CardContent, CardMedia, IconButton, Typography } from "@mui/material";
-import { type User, type Cat } from "~/Types";
+import { useMemo } from "react";
+import { type Cat, type User } from "~/Types";
+import { api } from "~/utils/api";
 import CatSatus from "./CatSatus";
 
 type catCardProps = {
@@ -12,6 +14,21 @@ type catCardProps = {
 };
 
 export default function CatCard({ cat, user, handleCatCardClick, handleEditCatClick, deleteCat }: catCardProps) {
+    const utils = api.useContext();
+
+    const { mutateAsync: addToFavoirt } = api.cats.addToFavoirt.useMutation({
+        onSuccess: () => utils.cats.all.invalidate(),
+    });
+    const { mutateAsync: removeFromFavoirt } = api.cats.removeFromFavoirt.useMutation({
+        onSuccess: () => utils.cats.all.invalidate(),
+    });
+
+    const isFavorit = useMemo(() => {
+        if (!user) return false;
+
+        return cat.catLoversIds.includes(user.id);
+    }, [cat, user]);
+
     return (
         <Card>
             <CardActionArea
@@ -33,8 +50,25 @@ export default function CatCard({ cat, user, handleCatCardClick, handleEditCatCl
 
                         <Box display="flex">
                             {user?.role === "customer" && (
-                                <IconButton>
-                                    <Star />
+                                <IconButton
+                                    onClick={async (e) => {
+                                        e.stopPropagation();
+
+                                        if (!isFavorit) {
+                                            await addToFavoirt({
+                                                userId: user.id,
+                                                catId: cat.id,
+                                            });
+                                        } else {
+                                            await removeFromFavoirt({ userId: user.id, catId: cat.id });
+                                        }
+                                    }}
+                                >
+                                    <Star
+                                        sx={{
+                                            color: isFavorit ? (theme) => theme.palette.yellow.main : undefined,
+                                        }}
+                                    />
                                 </IconButton>
                             )}
 

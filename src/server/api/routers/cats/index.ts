@@ -2,23 +2,13 @@ import { differenceInMonths } from "date-fns";
 import { seededCatStatusIds } from "~/constants";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import { prisma } from "~/server/db";
-import { type PrismaCat } from "./PrismaUtils";
-import { CreateCatInput, DeleteCatInput, GetCatInput, UpdateCatInput } from "./zod";
+import { CatSelect, type PrismaCat } from "./PrismaUtils";
+import { FavoritInput, CreateCatInput, DeleteCatInput, GetCatInput, UpdateCatInput } from "./zod";
 
 export const catsRouter = createTRPCRouter({
     all: publicProcedure.query(async () => {
         const cats = await prisma.cat.findMany({
-            select: {
-                id: true,
-                name: true,
-                birthDate: true,
-                breed: true,
-                gender: true,
-                city: true,
-                description: true,
-                photo: true,
-                adoptionStatus: true,
-            },
+            select: CatSelect,
         });
 
         return cats.map(parsedCat);
@@ -29,17 +19,7 @@ export const catsRouter = createTRPCRouter({
                 where: {
                     id: input.id,
                 },
-                select: {
-                    id: true,
-                    name: true,
-                    birthDate: true,
-                    breed: true,
-                    gender: true,
-                    city: true,
-                    description: true,
-                    photo: true,
-                    adoptionStatus: true,
-                },
+                select: CatSelect,
             })
     ),
     create: publicProcedure.input(CreateCatInput).mutation(async ({ input }) => {
@@ -83,6 +63,34 @@ export const catsRouter = createTRPCRouter({
                 },
             })
     ),
+    addToFavoirt: publicProcedure.input(FavoritInput).mutation(async ({ input }) => {
+        return await prisma.cat.update({
+            where: {
+                id: input.catId,
+            },
+            data: {
+                catLovers: {
+                    connect: {
+                        id: input.userId,
+                    },
+                },
+            },
+        });
+    }),
+    removeFromFavoirt: publicProcedure.input(FavoritInput).mutation(async ({ input }) => {
+        await prisma.cat.update({
+            where: {
+                id: input.catId,
+            },
+            data: {
+                catLovers: {
+                    disconnect: {
+                        id: input.userId,
+                    },
+                },
+            },
+        });
+    }),
 });
 
 type ParsedCat<T> = T & { age: string };
