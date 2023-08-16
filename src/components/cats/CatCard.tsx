@@ -1,14 +1,17 @@
-import { Box, Card, CardActionArea, CardContent, CardMedia, Typography } from "@mui/material";
-import { type Cat } from "~/Types";
+import { Clear, Edit, Star } from "@mui/icons-material";
+import { Box, Card, CardActionArea, CardContent, CardMedia, IconButton, Typography } from "@mui/material";
+import { type User, type Cat } from "~/Types";
 import CatSatus from "./CatSatus";
 
 type catCardProps = {
     cat: Cat;
+    user?: User;
     handleCatCardClick: (cat: Cat) => void;
     handleEditCatClick: (cat: Cat) => void;
+    deleteCat: (cat: { id: string }) => void;
 };
 
-export default function CatCard({ cat, handleCatCardClick, handleEditCatClick }: catCardProps) {
+export default function CatCard({ cat, user, handleCatCardClick, handleEditCatClick, deleteCat }: catCardProps) {
     return (
         <Card>
             <CardActionArea
@@ -18,21 +21,57 @@ export default function CatCard({ cat, handleCatCardClick, handleEditCatClick }:
                 <CardMedia
                     image={cat.photo}
                     sx={{
-                        width: "250px",
-                        height: "250px",
+                        width: "200px",
+                        height: "200px",
                     }}
                 />
                 <CardContent sx={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
                     <Box display="flex" justifyContent="space-between">
                         <Typography gutterBottom variant="h5" component="div">
-                            {cat.name},
+                            {cat.name}
                         </Typography>
 
-                        <CatSatus status={cat.adoptionStatus} />
+                        <Box display="flex">
+                            {user?.role === "customer" && (
+                                <IconButton>
+                                    <Star />
+                                </IconButton>
+                            )}
+
+                            <CatSatus status={cat.adoptionStatus} />
+                        </Box>
                     </Box>
+
                     <Typography variant="body2" color="text.secondary">
                         {cat.description}
                     </Typography>
+
+                    {user?.role === "admin" && (
+                        <Box display="flex" justifyContent="end" position="absolute" bottom={0} right={0} margin={1}>
+                            <IconButton
+                                color="warning"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleEditCatClick(cat);
+                                }}
+                            >
+                                <Edit />
+                            </IconButton>
+
+                            <IconButton
+                                color="error"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    const response = window.confirm(
+                                        "Are you sure you want to delete this cute cat from the list ??"
+                                    );
+                                    if (response) deleteCat({ id: cat.id });
+                                }}
+                            >
+                                <Clear />
+                            </IconButton>
+                        </Box>
+                    )}
                 </CardContent>
             </CardActionArea>
         </Card>

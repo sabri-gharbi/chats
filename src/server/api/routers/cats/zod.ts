@@ -12,4 +12,6 @@ export const CreateCatInput = BaseCatModel.omit({
 
 export const UpdateCatInput = BaseCatModel;
 
+export const DeleteCatInput = z.object({ id: BaseCatModel.shape.id });
+
 export const GetCatInput = z.object({ id: BaseCatModel.shape.id });

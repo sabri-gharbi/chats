@@ -13,13 +13,12 @@ import {
     TextField,
     Typography,
 } from "@mui/material";
-import { useCallback } from "react";
+import { DatePicker } from "@mui/x-date-pickers";
+import { useCallback, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { type Cat } from "~/Types";
 import { api } from "~/utils/api";
 import { type SelectOption } from "../users/UserModal";
-import { DatePicker } from "@mui/x-date-pickers";
-import { differenceInYears } from "date-fns";
 import CatSatus from "./CatSatus";
 
 const genders: SelectOption[] = [
@@ -35,7 +34,7 @@ export type CatModalProps = {
 };
 
 type CatForm = Cat;
-const CatModal = ({ onClose, open, cat, variant }: CatModalProps) => {
+const CatModal = ({ onClose: _onClose, open, cat, variant }: CatModalProps) => {
     const utils = api.useContext();
 
     const { mutateAsync: addCat } = api.cats.create.useMutation();
@@ -48,7 +47,28 @@ const CatModal = ({ onClose, open, cat, variant }: CatModalProps) => {
         formState: { errors },
         setValue,
         trigger,
-    } = useForm<CatForm>();
+        reset,
+    } = useForm<CatForm>({});
+
+    useEffect(() => {
+        if (cat) reset({ ...cat });
+    }, [cat, reset]);
+
+    const onClose = useCallback(() => {
+        _onClose();
+        reset({
+            adoptionStatus: undefined,
+            id: undefined,
+            age: "",
+            birthDate: new Date(),
+            breed: "",
+            city: "",
+            description: "",
+            gender: "",
+            photo: "",
+            name: "",
+        });
+    }, [_onClose, reset]);
 
     const onSubmit = useCallback(
         async (data: CatForm) => {
@@ -58,9 +78,8 @@ const CatModal = ({ onClose, open, cat, variant }: CatModalProps) => {
                 await updateCat(data);
             }
             await utils.cats.all.invalidate();
-            onClose();
         },
-        [addCat, onClose, updateCat, utils.cats.all, variant]
+        [addCat, updateCat, utils.cats.all, variant]
     );
 
     return (
@@ -120,7 +139,7 @@ const CatModal = ({ onClose, open, cat, variant }: CatModalProps) => {
                                 cat && (
                                     <>
                                         <Typography fontWeight={600}>Age</Typography>
-                                        <Typography>{differenceInYears(new Date(), cat.birthDate)}</Typography>
+                                        <Typography>{cat.age}</Typography>
                                     </>
                                 )
                             )}

@@ -1,13 +1,20 @@
 import { Box, Button } from "@mui/material";
-import { api } from "~/utils/api";
 import { useContext, useState } from "react";
-import CatModal, { type CatModalProps } from "~/components/cats/CatModal";
 import { type Cat } from "~/Types";
 import { CatsAppContext } from "~/components/Layout";
 import CatCard from "~/components/cats/CatCard";
+import CatModal, { type CatModalProps } from "~/components/cats/CatModal";
+import { api } from "~/utils/api";
 
 export default function Cats() {
+    const utils = api.useContext();
+
     const { data: cats } = api.cats.all.useQuery();
+    const { mutate: deleteCat } = api.cats.delete.useMutation({
+        onSuccess: () => {
+            utils.cats.all.invalidate();
+        },
+    });
 
     const [selectedCat, setSelectedCat] = useState<Cat>();
     const [catModalShown, setCatModalShown] = useState<boolean>(false);
@@ -28,7 +35,7 @@ export default function Cats() {
 
     const handleEditCatClick = (cat: Cat) => {
         setSelectedCat(cat);
-        setCatModalVariant(undefined);
+        setCatModalVariant("edit");
         setCatModalShown(true);
     };
 
@@ -46,10 +53,12 @@ export default function Cats() {
                 <Box display="flex" flexDirection="column" gap={2}>
                     {(cats ?? []).map((cat) => (
                         <CatCard
+                            user={user}
                             key={cat.id}
                             cat={cat}
                             handleCatCardClick={handleCatCardClick}
                             handleEditCatClick={handleEditCatClick}
+                            deleteCat={deleteCat}
                         />
                     ))}
                 </Box>
