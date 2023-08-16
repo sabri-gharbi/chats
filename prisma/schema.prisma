@@ -20,7 +20,7 @@ model Cat {
     description String
     photo       String
 
-    adoptiuonStatusId String         @db.ObjectId
+    adoptiuonStatusId String
     adoptionStatus    AdoptionStatus @relation(fields: [adoptiuonStatusId], references: [id])
 
     catLoversIds String[] @db.ObjectId
@@ -31,7 +31,7 @@ model Cat {
 }
 
 model AdoptionStatus {
-    id          String  @id @map("_id") @db.ObjectId
+    id          String  @id @map("_id")
     isAdopted   Boolean
     isPending   Boolean
     isAdoptable Boolean

@@ -1,7 +1,5 @@
-import { Menu } from "@mui/icons-material";
-import { AppBar, Box, IconButton, Toolbar, Typography } from "@mui/material";
+import { AppBar, Box, Toolbar, Typography } from "@mui/material";
 import Link from "next/link";
-import React from "react";
 import { type User } from "~/Types";
 
 type CatsAppBarProps = {

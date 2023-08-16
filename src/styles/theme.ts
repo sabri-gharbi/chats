@@ -9,7 +9,7 @@ export const ChatsTheme: ThemeOptions = {
             main: "#DAC0A3",
         },
         background: {
-            paper: "#F1F0E8",
+            paper: "#EEEDED",
         },
     },
     components: {
@@ -17,6 +17,22 @@ export const ChatsTheme: ThemeOptions = {
             styleOverrides: {
                 root: {
                     borderRadius: 8,
+                },
+            },
+        },
+        MuiDialog: {
+            styleOverrides: {
+                paper: {
+                    borderRadius: 12,
+                    padding: 4,
+                },
+            },
+        },
+
+        MuiCard: {
+            styleOverrides: {
+                root: {
+                    borderRadius: 12,
                 },
             },
         },

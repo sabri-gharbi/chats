@@ -1,16 +1,19 @@
 import { Box, Button } from "@mui/material";
-import CatsList from "~/components/cats/CatsList";
 import { api } from "~/utils/api";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import CatModal, { type CatModalProps } from "~/components/cats/CatModal";
 import { type Cat } from "~/Types";
+import { CatsAppContext } from "~/components/Layout";
+import CatCard from "~/components/cats/CatCard";
 
 export default function Cats() {
-    const { data: cats, isLoading: isCatsLoading } = api.cats.all.useQuery();
+    const { data: cats } = api.cats.all.useQuery();
 
     const [selectedCat, setSelectedCat] = useState<Cat>();
     const [catModalShown, setCatModalShown] = useState<boolean>(false);
     const [catModalvariant, setCatModalVariant] = useState<CatModalProps["variant"]>();
+
+    const { user } = useContext(CatsAppContext);
 
     const handleCloseCatModal = () => {
         setCatModalShown(false);
@@ -36,18 +39,27 @@ export default function Cats() {
     };
 
     return (
-        <>
+        <Box display="flex" flexDirection="column" padding={4}>
             <CatModal cat={selectedCat} open={catModalShown} onClose={handleCloseCatModal} variant={catModalvariant} />
 
-            <Button onClick={handleOpenCreateCatModal}>Add a Cat</Button>
-
-            <Box display="flex" flexDirection="column" justifyContent="center">
-                <CatsList
-                    cats={cats ?? []}
-                    handleCatCardClick={handleCatCardClick}
-                    handleEditCatClick={handleEditCatClick}
-                />
+            <Box display="flex" flexDirection="column" justifyContent="center" marginBottom={2}>
+                <Box display="flex" flexDirection="column" gap={2}>
+                    {(cats ?? []).map((cat) => (
+                        <CatCard
+                            key={cat.id}
+                            cat={cat}
+                            handleCatCardClick={handleCatCardClick}
+                            handleEditCatClick={handleEditCatClick}
+                        />
+                    ))}
+                </Box>
             </Box>
-        </>
+
+            {user?.role.toLowerCase() === "admin" && (
+                <Button variant="contained" onClick={handleOpenCreateCatModal}>
+                    Add a Cat
+                </Button>
+            )}
+        </Box>
     );
 }
