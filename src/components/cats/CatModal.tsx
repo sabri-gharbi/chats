@@ -177,7 +177,7 @@ const CatModal = ({ onClose: _onClose, open, cat, variant }: CatModalProps) => {
                                                 error={Boolean(errors.gender)}
                                                 onChange={(e) => {
                                                     setValue("gender", e.target.value as string);
-                                                    trigger();
+                                                    trigger("gender");
                                                 }}
                                             >
                                                 {genders.map((gender) => (

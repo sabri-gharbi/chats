@@ -1,15 +1,26 @@
 import { Box, Button } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext, useMemo, useState } from "react";
 import { type Cat } from "~/Types";
-import { CatsAppContext } from "~/components/Layout";
+import { CatsAppContext } from "~/components/layout";
 import CatCard from "~/components/cats/CatCard";
 import CatModal, { type CatModalProps } from "~/components/cats/CatModal";
+import CatsToolBar from "~/components/cats/CatsToolBar";
 import { api } from "~/utils/api";
+
+export type SortCatsFields = Extract<keyof Cat, "name" | "city" | "adoptionStatus">;
+export const SortFieldsOption: { label: string; value: SortCatsFields }[] = [
+    { label: "Name", value: "name" },
+    { label: "City", value: "city" },
+    { label: "Adoption Status", value: "adoptionStatus" },
+];
+
+export type FilterCatsFields = { catLover: string };
 
 export default function Cats() {
     const utils = api.useContext();
+    const { user } = useContext(CatsAppContext);
 
-    const { data: cats } = api.cats.all.useQuery();
+    const { data } = api.cats.all.useQuery();
     const { mutate: deleteCat } = api.cats.delete.useMutation({
         onSuccess: () => {
             utils.cats.all.invalidate();
@@ -20,7 +31,26 @@ export default function Cats() {
     const [catModalShown, setCatModalShown] = useState<boolean>(false);
     const [catModalvariant, setCatModalVariant] = useState<CatModalProps["variant"]>();
 
-    const { user } = useContext(CatsAppContext);
+    const [sortField, setSortField] = useState<SortCatsFields>();
+    const [filter, setFilter] = useState<FilterCatsFields>();
+
+    const cats = useMemo(() => {
+        const filtredData = (data || []).filter((item) => {
+            if (!filter) {
+                return true;
+            }
+
+            return item.catLoversIds.includes(filter.catLover);
+        });
+
+        if (!sortField) return filtredData;
+
+        return filtredData.sort((a, b) => {
+            if (sortField === "adoptionStatus") return a.adoptionStatus.id.localeCompare(b.adoptionStatus.id);
+
+            return a[sortField].localeCompare(b[sortField]);
+        });
+    }, [data, filter, sortField]);
 
     const handleCloseCatModal = () => {
         setCatModalShown(false);
@@ -46,8 +76,8 @@ export default function Cats() {
     };
 
     return (
-        <Box display="flex" flexDirection="column" padding={4}>
-            <CatModal cat={selectedCat} open={catModalShown} onClose={handleCloseCatModal} variant={catModalvariant} />
+        <Box display="flex" flexDirection="column" padding={4} paddingTop={2}>
+            <CatsToolBar filter={filter} setFilter={setFilter} sortField={sortField} setSortField={setSortField} />
 
             <Box display="flex" flexDirection="column" justifyContent="center" marginBottom={2}>
                 <Box display="flex" flexDirection="column" gap={2}>
@@ -69,6 +99,8 @@ export default function Cats() {
                     Add a Cat
                 </Button>
             )}
+
+            <CatModal cat={selectedCat} open={catModalShown} onClose={handleCloseCatModal} variant={catModalvariant} />
         </Box>
     );
 }

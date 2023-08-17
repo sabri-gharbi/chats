@@ -2,7 +2,7 @@ import { Box, Button } from "@mui/material";
 import { useRouter } from "next/router";
 import { useContext, useState } from "react";
 import { type User } from "~/Types";
-import { CatsAppContext } from "~/components/Layout";
+import { CatsAppContext } from "~/components/layout";
 import UserCard from "~/components/users/UserCard";
 import UserModal from "~/components/users/UserModal";
 import { api } from "~/utils/api";
@@ -29,14 +29,7 @@ const Home = () => {
         <Box display="flex" flexDirection="column" padding={4}>
             <UserModal open={userModalShown} onClose={closeUserModal} />
 
-            <Box
-                sx={{
-                    border: 1,
-                    borderRadius: 8,
-                    overflow: "hidden",
-                    marginBottom: 2,
-                }}
-            >
+            <Box>
                 {users?.map((user) => (
                     <UserCard key={user.id} user={user} handleUserCardClick={handleUserCardClick} />
                 ))}

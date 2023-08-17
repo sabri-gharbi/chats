@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { type AppType } from "next/app";
 import Head from "next/head";
-import Layout from "~/components/Layout";
+import Layout from "~/components/layout";
 import "~/styles/global.css";
 import { ChatsTheme } from "~/styles/theme";
 import { api } from "~/utils/api";

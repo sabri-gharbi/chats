@@ -8,7 +8,7 @@ export type UserCardProps = {
 
 const UserCard = ({ user, handleUserCardClick }: UserCardProps) => {
     return (
-        <Card sx={{ display: "flex" }}>
+        <Card sx={{ display: "flex", marginBottom: 2 }}>
             <CardActionArea onClick={() => handleUserCardClick(user)}>
                 <CardContent>
                     <Box display="flex" justifyContent="space-between">
