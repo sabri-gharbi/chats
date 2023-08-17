@@ -28,15 +28,8 @@ model Cat {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-}
 
-model AdoptionStatus {
-    id          String  @id @map("_id")
-    isAdopted   Boolean
-    isPending   Boolean
-    isAdoptable Boolean
-
-    cats Cat[]
+    adoptionDemands AdoptionDemand[]
 }
 
 model User {
@@ -50,4 +43,42 @@ model User {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    adoptionDemands AdoptionDemand[]
+}
+
+model AdoptionDemand {
+    id String @id @default(auto()) @map("_id") @db.ObjectId
+
+    userId String @db.ObjectId
+    user   User   @relation(fields: [userId], references: [id])
+
+    catId String @db.ObjectId
+    cat   Cat    @relation(fields: [userId], references: [id])
+
+    statusId String?
+    status   AdoptionDemandStatus? @relation(fields: [statusId], references: [id])
+
+    createdAt DateTime @default(now())
+
+    @@unique([catId, userId])
+}
+
+model AdoptionDemandStatus {
+    id         String  @id @map("_id")
+    isAccepted Boolean
+    isRejected Boolean
+    isPendding Boolean
+    isCancled  Boolean
+
+    adoptionDemands AdoptionDemand[]
+}
+
+model AdoptionStatus {
+    id          String  @id @map("_id")
+    isAdopted   Boolean
+    isPending   Boolean
+    isAdoptable Boolean
+
+    cats Cat[]
 }

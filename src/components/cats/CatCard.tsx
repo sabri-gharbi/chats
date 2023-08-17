@@ -1,5 +1,5 @@
 import { Clear, Edit, Star } from "@mui/icons-material";
-import { Box, Card, CardActionArea, CardContent, CardMedia, IconButton, Typography } from "@mui/material";
+import { Box, Button, Card, CardActionArea, CardContent, CardMedia, IconButton, Typography } from "@mui/material";
 import { useMemo } from "react";
 import { type Cat, type User } from "~/Types";
 import { api } from "~/utils/api";
@@ -23,6 +23,20 @@ export default function CatCard({ cat, user, handleCatCardClick, handleEditCatCl
         onSuccess: () => utils.cats.all.invalidate(),
     });
 
+    const { data: order } = api.orders.one.useQuery(
+        { catId: cat.id, userId: user!.id },
+        {
+            enabled: Boolean(user),
+        }
+    );
+
+    const { mutateAsync: sendAdoptionRequest } = api.orders.sendAdoptionRequest.useMutation({
+        onSuccess: () => utils.orders.one.invalidate({ catId: cat.id, userId: user!.id }),
+    });
+    const { mutateAsync: cancelAdoptionRequest } = api.orders.cancelAdoptionRequest.useMutation({
+        onSuccess: () => utils.orders.one.invalidate({ catId: cat.id, userId: user!.id }),
+    });
+
     const isFavorit = useMemo(() => {
         if (!user) return false;
 
@@ -44,9 +58,19 @@ export default function CatCard({ cat, user, handleCatCardClick, handleEditCatCl
                 />
                 <CardContent sx={{ display: "flex", flexDirection: "column", width: "100%", height: "100%" }}>
                     <Box display="flex" justifyContent="space-between">
-                        <Typography gutterBottom variant="h5" component="div">
-                            {cat.name}
-                        </Typography>
+                        <Box display="flex" gap={0.5}>
+                            <Typography gutterBottom variant="h5" component="div">
+                                {cat.name},{" "}
+                            </Typography>
+
+                            <CatSatus
+                                status={
+                                    order && cat.adoptionStatus.isAdoptable
+                                        ? { id: "isPending", isAdoptable: false, isAdopted: false, isPending: true }
+                                        : cat.adoptionStatus
+                                }
+                            />
+                        </Box>
 
                         <Box display="flex">
                             {user?.role === "customer" && (
@@ -71,8 +95,6 @@ export default function CatCard({ cat, user, handleCatCardClick, handleEditCatCl
                                     />
                                 </IconButton>
                             )}
-
-                            <CatSatus status={cat.adoptionStatus} />
                         </Box>
                     </Box>
 
@@ -104,6 +126,39 @@ export default function CatCard({ cat, user, handleCatCardClick, handleEditCatCl
                             >
                                 <Clear />
                             </IconButton>
+                        </Box>
+                    )}
+
+                    {user?.role === "customer" && (
+                        <Box display="flex" justifyContent="end" position="absolute" bottom={0} right={0} margin={1}>
+                            {order ? (
+                                <Button
+                                    variant="contained"
+                                    color="error"
+                                    onClick={async (e) => {
+                                        e.stopPropagation();
+                                        await cancelAdoptionRequest({
+                                            catId: cat.id,
+                                            userId: user.id,
+                                        });
+                                    }}
+                                >
+                                    Cancel adoption request
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="contained"
+                                    onClick={async (e) => {
+                                        e.stopPropagation();
+                                        await sendAdoptionRequest({
+                                            catId: cat.id,
+                                            userId: user.id,
+                                        });
+                                    }}
+                                >
+                                    Send adoption request
+                                </Button>
+                            )}
                         </Box>
                     )}
                 </CardContent>

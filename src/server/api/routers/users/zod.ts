@@ -1,4 +1,4 @@
-import { UserModel } from "prisma/zod";
+import { CatModel, UserModel } from "prisma/zod";
 import { z } from "zod";
 
 export const BaseUserModel = UserModel.omit({

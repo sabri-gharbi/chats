@@ -16,7 +16,7 @@ const StatusColors: Record<statusStringIds, string> = {
 const CatSatus = ({ status }: CatStatusProps) => {
     return (
         <Typography
-            variant="subtitle1"
+            variant="subtitle2"
             sx={{
                 color: "white",
                 bgcolor: `${StatusColors[status.id as statusStringIds]}.light`,
