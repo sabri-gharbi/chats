@@ -5,3 +5,9 @@ export const OrderInput = z.object({
     userId: UserModel.shape.id,
     catId: CatModel.shape.id,
 });
+
+export const GetAllOrderInput = z
+    .object({
+        catId: CatModel.shape.id,
+    })
+    .optional();

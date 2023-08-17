@@ -56,22 +56,9 @@ model AdoptionDemand {
     catId String @db.ObjectId
     cat   Cat    @relation(fields: [userId], references: [id])
 
-    statusId String?
-    status   AdoptionDemandStatus? @relation(fields: [statusId], references: [id])
-
     createdAt DateTime @default(now())
 
     @@unique([catId, userId])
-}
-
-model AdoptionDemandStatus {
-    id         String  @id @map("_id")
-    isAccepted Boolean
-    isRejected Boolean
-    isPendding Boolean
-    isCancled  Boolean
-
-    adoptionDemands AdoptionDemand[]
 }
 
 model AdoptionStatus {

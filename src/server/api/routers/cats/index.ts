@@ -64,8 +64,6 @@ export const catsRouter = createTRPCRouter({
             })
     ),
     addToFavoirt: publicProcedure.input(FavoritInput).mutation(async ({ input }) => {
-
-        console.log("sabri")
         return await prisma.cat.update({
             where: {
                 id: input.catId,

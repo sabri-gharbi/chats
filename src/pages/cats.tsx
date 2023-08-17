@@ -6,6 +6,7 @@ import CatCard from "~/components/cats/CatCard";
 import CatModal, { type CatModalProps } from "~/components/cats/CatModal";
 import CatsToolBar from "~/components/cats/CatsToolBar";
 import { api } from "~/utils/api";
+import OrdersModal from "~/components/orders/OrdersModal";
 
 export type SortCatsFields = Extract<keyof Cat, "name" | "city" | "adoptionStatus">;
 export const SortFieldsOption: { label: string; value: SortCatsFields }[] = [
@@ -29,6 +30,7 @@ export default function Cats() {
 
     const [selectedCat, setSelectedCat] = useState<Cat>();
     const [catModalShown, setCatModalShown] = useState<boolean>(false);
+    const [ordesModalShown, setOrdersCatModalShown] = useState<boolean>(false);
     const [catModalvariant, setCatModalVariant] = useState<CatModalProps["variant"]>();
 
     const [sortField, setSortField] = useState<SortCatsFields>();
@@ -47,6 +49,7 @@ export default function Cats() {
 
         return filtredData.sort((a, b) => {
             if (sortField === "adoptionStatus") return a.adoptionStatus.id.localeCompare(b.adoptionStatus.id);
+            //TODO:adopt with status filter will not give accurate resualts
 
             return a[sortField].localeCompare(b[sortField]);
         });
@@ -75,6 +78,16 @@ export default function Cats() {
         setCatModalShown(true);
     };
 
+    const handleCloseOrdersModal = () => {
+        setOrdersCatModalShown(false);
+        setSelectedCat(undefined);
+    };
+
+    const handleOpenOrdersModal = (cat: Cat) => {
+        setSelectedCat(cat);
+        setOrdersCatModalShown(true);
+    };
+
     return (
         <Box display="flex" flexDirection="column" padding={4} paddingTop={2}>
             <CatsToolBar filter={filter} setFilter={setFilter} sortField={sortField} setSortField={setSortField} />
@@ -88,6 +101,7 @@ export default function Cats() {
                             cat={cat}
                             handleCatCardClick={handleCatCardClick}
                             handleEditCatClick={handleEditCatClick}
+                            handleOpenOrdersModal={handleOpenOrdersModal}
                             deleteCat={deleteCat}
                         />
                     ))}
@@ -101,6 +115,9 @@ export default function Cats() {
             )}
 
             <CatModal cat={selectedCat} open={catModalShown} onClose={handleCloseCatModal} variant={catModalvariant} />
+            {selectedCat && (
+                <OrdersModal catId={selectedCat.id} open={ordesModalShown} onClose={handleCloseOrdersModal} />
+            )}
         </Box>
     );
 }

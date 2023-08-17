@@ -1,4 +1,4 @@
-import { Clear, Edit, Star } from "@mui/icons-material";
+import { Clear, Edit, List, Star } from "@mui/icons-material";
 import { Box, Button, Card, CardActionArea, CardContent, CardMedia, IconButton, Typography } from "@mui/material";
 import { useMemo } from "react";
 import { type Cat, type User } from "~/Types";
@@ -10,10 +10,18 @@ type catCardProps = {
     user?: User;
     handleCatCardClick: (cat: Cat) => void;
     handleEditCatClick: (cat: Cat) => void;
+    handleOpenOrdersModal: (cat: Cat) => void;
     deleteCat: (cat: { id: string }) => void;
 };
 
-export default function CatCard({ cat, user, handleCatCardClick, handleEditCatClick, deleteCat }: catCardProps) {
+export default function CatCard({
+    cat,
+    user,
+    handleCatCardClick,
+    handleEditCatClick,
+    deleteCat,
+    handleOpenOrdersModal,
+}: catCardProps) {
     const utils = api.useContext();
 
     const { mutateAsync: addToFavoirt } = api.cats.addToFavoirt.useMutation({
@@ -29,6 +37,7 @@ export default function CatCard({ cat, user, handleCatCardClick, handleEditCatCl
             enabled: Boolean(user),
         }
     );
+    const { data: orders } = api.orders.all.useQuery({ catId: cat.id });
 
     const { mutateAsync: sendAdoptionRequest } = api.orders.sendAdoptionRequest.useMutation({
         onSuccess: () => utils.orders.one.invalidate({ catId: cat.id, userId: user!.id }),
@@ -95,6 +104,18 @@ export default function CatCard({ cat, user, handleCatCardClick, handleEditCatCl
                                     />
                                 </IconButton>
                             )}
+                            {user?.role === "admin" && !cat.adoptionStatus.isAdopted && (
+                                <Button
+                                    disabled={!orders?.length}
+                                    onClick={async (e) => {
+                                        e.stopPropagation();
+                                        handleOpenOrdersModal(cat);
+                                    }}
+                                    endIcon={<List />}
+                                >
+                                    {orders?.length || 0}
+                                </Button>
+                            )}
                         </Box>
                     </Box>
 
@@ -106,6 +127,7 @@ export default function CatCard({ cat, user, handleCatCardClick, handleEditCatCl
                         <Box display="flex" justifyContent="end" position="absolute" bottom={0} right={0} margin={1}>
                             <IconButton
                                 color="warning"
+                                disabled={cat.adoptionStatus.isAdopted}
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     handleEditCatClick(cat);
@@ -129,7 +151,7 @@ export default function CatCard({ cat, user, handleCatCardClick, handleEditCatCl
                         </Box>
                     )}
 
-                    {user?.role === "customer" && (
+                    {user?.role === "customer" && !cat.adoptionStatus.isAdopted && (
                         <Box display="flex" justifyContent="end" position="absolute" bottom={0} right={0} margin={1}>
                             {order ? (
                                 <Button

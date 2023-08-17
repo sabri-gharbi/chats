@@ -62,7 +62,7 @@ const UserModal = ({ onClose: _onClose, open }: UserModalProps) => {
     );
 
     return (
-        <Dialog {...{ open, onClose }}>
+        <Dialog {...{ open, onClose }} maxWidth="md" fullWidth>
             <DialogTitle>Create User</DialogTitle>
             <form onSubmit={handleSubmit(onSubmit)}>
                 <DialogContent>

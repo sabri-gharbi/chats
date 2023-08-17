@@ -78,12 +78,13 @@ const CatModal = ({ onClose: _onClose, open, cat, variant }: CatModalProps) => {
                 await updateCat(data);
             }
             await utils.cats.all.invalidate();
+            onClose();
         },
-        [addCat, updateCat, utils.cats.all, variant]
+        [addCat, onClose, updateCat, utils.cats.all, variant]
     );
 
     return (
-        <Dialog {...{ open, onClose }}>
+        <Dialog {...{ open, onClose }} maxWidth="md" fullWidth>
             <DialogTitle>
                 {variant === "create" && <Typography variant="h6">Add a new Cat</Typography>}
                 {variant === "edit" && <Typography variant="h6">Edit Cat Info </Typography>}
