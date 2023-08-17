@@ -78,6 +78,8 @@ export default function CatCard({
                                         ? { id: "isPending", isAdoptable: false, isAdopted: false, isPending: true }
                                         : cat.adoptionStatus
                                 }
+
+                                //TODO: am changing this in front only in order for the filter to work i have to update the status somehow in the back
                             />
                         </Box>
 

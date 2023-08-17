@@ -49,7 +49,7 @@ export default function Cats() {
 
         return filtredData.sort((a, b) => {
             if (sortField === "adoptionStatus") return a.adoptionStatus.id.localeCompare(b.adoptionStatus.id);
-            //TODO:adopt with status filter will not give accurate resualts
+            //TODO:sort with status filter will not give accurate resualts
 
             return a[sortField].localeCompare(b[sortField]);
         });
